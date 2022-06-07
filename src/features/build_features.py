@@ -4,8 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import normalize, StandardScaler
 from sklearn.feature_selection import VarianceThreshold
-import sys
-sys.path.append("/Users/marek/Documents/Shool/Proj/ml-project")
 from src.data.make_dataset import load_raw_train_data
 
 # Load data
