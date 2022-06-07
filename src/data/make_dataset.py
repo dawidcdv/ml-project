@@ -19,7 +19,7 @@ def main(input_filepath, output_filepath):
 
 
 def load_raw_train_data():
-    return pd.read_csv(absolute_path('data', 'raw', 'train_data.csv'))
+    return pd.read_csv(absolute_path('data', 'raw', 'train_data.csv'),  header=None)
 
 
 if __name__ == '__main__':
