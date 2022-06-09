@@ -26,4 +26,4 @@ upper_tri = corr_matrix.where(np.triu(np.ones(corr_matrix.shape),k=1).astype(np.
 to_drop = [column for column in upper_tri.columns if any(upper_tri[column] > 0.95)]
 df1 = train.drop(train.columns[to_drop], axis=1)
 print(df1)
-df1.to_csv(absolute_path("data","processed","train_data.csv"))
+df1.to_csv(absolute_path("data","processed","train_data.csv"), header=False)
