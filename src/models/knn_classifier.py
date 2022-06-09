@@ -8,12 +8,12 @@ from src.data.make_dataset import load_labels, load_train_data
 
 
 def get_knn_classifier(X_train, y_train, cache=True):
-    if os.path.exists(DC_KNN_FILE) and cache:
-        knn = joblib.load(open(DC_KNN_FILE, 'rb'))
+    if os.path.exists(KNN_FILE) and cache:
+        knn = joblib.load(open(KNN_FILE, 'rb'))
     else:
         knn = KNeighborsClassifier(n_neighbors=5)
         knn.fit(X_train, y_train)
-        joblib.dump(knn, DC_KNN_FILE)
+        joblib.dump(knn, KNN_FILE)
 
     return knn
 
@@ -32,5 +32,5 @@ def main():
 
 
 if __name__ == '__main__':
-    DC_KNN_FILE = absolute_path('models', 'knn_classifier.pkl')
+    KNN_FILE = absolute_path('models', 'knn_classifier.pkl')
     main()
