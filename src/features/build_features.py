@@ -5,6 +5,7 @@ from sklearn.feature_selection import VarianceThreshold
 from src.data.make_dataset import load_raw_train_data, load_test_data, load_labels
 from src.features.helpers import absolute_path
 from scipy.stats import normaltest
+from sklearn.decomposition import PCA
 
 # Load data
 train = load_raw_train_data()
@@ -54,7 +55,7 @@ def rm_sigma(dataFrame, column, sigma):
     dataFrame = dataFrame[(dataFrame[column] < sigma_thresh_up) & (dataFrame[column] > sigma_thresh_down)]
     return dataFrame[column]
 
-sigma = 3
+sigma = 5
 
 df_clear = pd.DataFrame()
 for column in train.columns:
@@ -68,9 +69,14 @@ print(df_nan_rm.isna().sum().sort_values())
 
 print(df_nan_rm.shape)
 
-# # Standardize feature matrix
+# Standardize feature matrix
 scaler = StandardScaler()
 train_std = scaler.fit_transform(train)
 
 # Save data after cleaning
-train_std.to_csv(absolute_path("data","processed","train_data.csv"), header=False)
+#train_std.to_csv(absolute_path("data","processed","train_data.csv"), header=False)
+
+# PCA best n_components
+pca = PCA(n_components=0.95)
+train_reduced = pca.fit_transform(train_std)
+print('PCA n_components: ', pca.n_components_)
