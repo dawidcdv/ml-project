@@ -36,7 +36,7 @@ def main():
     tsne = TSNE()
     X_pca_tsne = tsne.fit_transform(X_pca)
 
-    sns.scatterplot(data = X_pca_tsne, x = X_pca_tsne[:,0], y=X_pca_tsne[:,1], hue=y[0], palette=palette)
+    sns.scatterplot(data = X_pca_tsne, x = X_pca_tsne[:,0], y=X_pca_tsne[:,1], hue=y[0], palette=palette).set(title='TSNE + PCA')
 
     plt.savefig(absolute_path("reports","figures","tsne_pca_scatter.png"))
 
