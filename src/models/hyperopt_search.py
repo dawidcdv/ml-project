@@ -4,7 +4,8 @@ import time
 import joblib
 import argparse
 from sklearn.decomposition import PCA
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classification_report, confusion_matrix
+from sklearn import metrics
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classification_report, confusion_matrix,balanced_accuracy_score
 from src.data.make_dataset import load_labels, load_train_data, load_raw_train_data
 from sklearn.model_selection import train_test_split, cross_val_score
 from hpsklearn import HyperoptEstimator, any_classifier, svc
@@ -46,30 +47,27 @@ def _check_condition(args, itter, starttime):
 
 def _get_args():
     parser = argparse.ArgumentParser("Hyperopt Search")
-    parser.add_argument("--evals", help="Hyperopt max_evals param - Default 10", type=int, default=15)
+    parser.add_argument("--score_func", help="Sklearn metrics function", type=str, default="balanced_accuracy_score")
+    parser.add_argument("--evals", help="Hyperopt max_evals param - Default 10", type=int, default=1)
     parser.add_argument("--scaler", help="Apply StandardScaler - Default True", type=bool, default=True)
     parser.add_argument("--pca", help="Apply PCA - Default True", type=bool, default=True)
     parser.add_argument("--n_components", help="PCA n_components - Default 0.98", type=float, default=0.98)
     parser.add_argument("--smote", help="Apply smote - Default True", type=bool, default=True)
     parser.add_argument("--try_number", help="Number of executions HyperoptEstimator.fit() in loop - Default 1",
                         type=int,
-                        default=5)
+                        default=1)
     parser.add_argument("--hour", help="Minimum script execution time in hour - Default disable", type=int,
                         default=0)
     parser.add_argument("--trial_timeout", help="HyperoptEstimator trial_timeout param - Default 90",
                         type=int, default=90)
     parser.add_argument("--log_level", help="Log level - Default 10", type=int, default=10)
-    parser.add_argument("--min_score", help="Min roc auc score to save model", type=float, default=90)
+    parser.add_argument("--min_score", help="Min score to save model", type=float, default=90)
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+def search(X, y, args):
     starttime = time.time()
-    args = _get_args()
-    logging.basicConfig(encoding='utf-8', level=args.log_level)
-
-    X = load_raw_train_data()
-    y = load_labels()
+    score_func = getattr(metrics, args.score_func)
 
     X_train, X_test, y_train, y_test = _train_test_data(X, y, args, test_size=0.3, random_state=542)
 
@@ -81,15 +79,27 @@ if __name__ == "__main__":
                                            n_jobs=-1, trial_timeout=args.trial_timeout)
             hyper_estim.fit(X_train, y_train.values.ravel())
             y_pred = hyper_estim.predict(X_test)
-            logging.info("Best ROC: " + str(roc_auc_score(y_test, y_pred)))
+            logging.info(args.score_func + ": " + str(score_func(y_test, y_pred)))
             logging.info(hyper_estim.best_model())
-            if roc_auc_score(y_test, y_pred) > args.min_score:
+            if score_func(y_test, y_pred) > args.min_score:
                 dump_file = absolute_path('models', 'hyperopt_estimator_' + str(itter) + '.pkl')
                 logging.info("Saveing model. Path:" + dump_file)
                 joblib.dump(hyper_estim, dump_file)
         except Exception as ex:
             logging.error(ex.__str__())
-    logging.info("The number of iterations: " + str(itter))
+    logging.info("Finish. The number of iterations: " + str(itter))
+
+
+def main():
+    args = _get_args()
+    logging.basicConfig(encoding='utf-8', level=args.log_level)
+    X = load_raw_train_data()
+    y = load_labels()
+    search(X, y, args)
+
+
+if __name__ == "__main__":
+    main()
 
 
 
