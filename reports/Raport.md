@@ -8,5 +8,5 @@
     - there is no NaN in all datasets
     - no corelation higher than 0.95
     - no low variance columns (treshold 0.5)
-    - no outliers
-    - best PCA n_components = 3074
+    - no outliers with 5 sigma
+    - best PCA n_components for variance 0.95 is 3074, and for variance 0.99 is 3558
