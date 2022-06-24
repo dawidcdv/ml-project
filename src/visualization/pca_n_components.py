@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-from src.data.make_dataset import load_raw_train_data
+from src.data.make_dataset import load_raw_train_data, absolute_path
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from src.features.helpers import absolute_path
+
 
 def main():
     X = load_raw_train_data()
@@ -25,8 +25,7 @@ def main():
     plt.axhline(y=95, color='yellow', linestyle='--', label='95% Explained Variance')
     plt.legend(loc='best')
     plt.grid(True)
-    plt.show()
-    #plt.savefig(absolute_path("reports","figures","pca_n_components_scatter.png"))
+    plt.savefig(absolute_path("reports","figures","pca_n_components_scatter.png"))
 
 if __name__ == '__main__':
     main()
