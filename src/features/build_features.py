@@ -60,9 +60,7 @@ def outliers_removing(train):
     print(df_clear.isna().sum().sort_values())
 
     df_nan_rm = df_clear.dropna()
-
     print(df_nan_rm.isna().sum().sort_values())
-
     print(df_nan_rm.shape)
 
 
@@ -90,3 +88,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
