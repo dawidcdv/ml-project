@@ -17,23 +17,33 @@
     - no corelation higher than 0.95
     - no low variance columns (treshold 0.5)
     - no outliers with 5 sigma
-    - PCA n_components for variance 0.95 is 3074, and for variance 0.99 is 3558
+    
+### TSNE PLOT
+![TSNE](https://github.com/dawidcdv/ml-project/blob/master/reports/figures/tsne_scatter.png?raw=true)
+
+### PCA + TSNE PLOT
+![TSNEPCA](https://github.com/dawidcdv/ml-project/blob/master/reports/figures/tsne_pca_scatter.png?raw=true)
+
+### PCA n_components for variance 0.95 is 3074, and for variance 0.99 is 3558 
+![Pca n_components](https://github.com/dawidcdv/ml-project/blob/master/reports/figures/pca_n_components_scatter.png?raw=true)
     
         
 ## Metrics
     The most reliable choice for such an unbalanced dataset would be ballanced accuracy 
     We tested the roc auc as well, f0.5 and f2 score were worse .
-    Classification report and confusion matrix allowed us to ultimately evaluate the effectiveness of the modelul
+    Classification report and confusion matrix allowed us to ultimately evaluate the effectiveness of the model
     
     
 ## Baseline
     DummyClassifier with its basic parameters indicated only one class
+![Baseline cm](https://github.com/dawidcdv/ml-project/blob/master/reports/figures/dummy_cm.jpg?raw=true)
+    
     
     
 ## Datasplit
     The data was split by train test split, while each model achieved a certain effectiveness
     (approximately 90% balanced accuracy score) and was considered by us to check for potential problems with
-    overfitting, which was verified by cross valid split in 5-10 folds.
+    overfitting, which was verified by cross valid split in 5-10 folds. We use 30% of the data for testing
     
     
 ## Classification
@@ -49,3 +59,5 @@
         random_state = 4
         
     It allowed to obtain the result cross val score: 0.9390
+    
+![svc cm](https://github.com/dawidcdv/ml-project/blob/master/reports/figures/svc_cm.jpg?raw=true)
