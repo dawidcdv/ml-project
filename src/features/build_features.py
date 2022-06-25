@@ -7,76 +7,86 @@ from src.features.helpers import absolute_path
 from scipy.stats import normaltest
 from sklearn.decomposition import PCA
 
-# Load data
-train = load_raw_train_data()
-test = load_test_data()
-labels = load_labels()
 
-# NaN checking
-print('NaN in TRAIN')
-print(train.isna().sum().sort_values())
-print('NaN in TEST')
-print(test.isna().sum().sort_values())
-print('NaN in LABELS')
-print(labels.value_counts())
-print('LABELS countin')
-print(labels.isna().sum().sort_values())
+def nan_checking(train, test, labels):
+    print('NaN in TRAIN')
+    print(train.isna().sum().sort_values())
+    print('NaN in TEST')
+    print(test.isna().sum().sort_values())
+    print('NaN in LABELS')
+    print(labels.value_counts())
+    print('LABELS countin')
+    print(labels.isna().sum().sort_values())
 
-# High corelation
-corr_matrix = train.corr().abs()
-upper_tri = corr_matrix.where(np.triu(np.ones(corr_matrix.shape),k=1).astype(np.bool_))
-to_drop = [column for column in upper_tri.columns if any(upper_tri[column] > 0.95)]
-print('High corelated coluns:', to_drop)
 
-# Caculate variance
-thresholder = VarianceThreshold(threshold=.5)
-train_high_variance = thresholder.fit_transform(train)
-print('Dataset shape after low variance removing', train_high_variance.shape)
+def high_corelation(train):
+    corr_matrix = train.corr().abs()
+    upper_tri = corr_matrix.where(np.triu(np.ones(corr_matrix.shape),k=1).astype(np.bool_))
+    to_drop = [column for column in upper_tri.columns if any(upper_tri[column] > 0.95)]
+    print('High corelated coluns:', to_drop)
 
-# Checking normal distribution
-is_normal = []
 
-for i in range(0, len(train.columns)):
-    stats, p = normaltest(train[i])
-    is_normal.append(1) if p > 0.05 else is_normal.append(0)
+def variance(train):
+    thresholder = VarianceThreshold(threshold=.5)
+    train_high_variance = thresholder.fit_transform(train)
+    print('Dataset shape after low variance removing', train_high_variance.shape)
 
-print(pd.DataFrame(is_normal).value_counts())
 
-# Outliers removing
-def rm_sigma(dataFrame, column, sigma):
-    # Calculate mean for data column
-    mean = dataFrame[column].mean()
-    # Calculate std 
-    std = dataFrame[column].std()
-    # Define a thresholds
-    sigma_thresh_up = mean + sigma * std
-    sigma_thresh_down = mean - sigma * std    
-    # Remove an outlier data
-    dataFrame = dataFrame[(dataFrame[column] < sigma_thresh_up) & (dataFrame[column] > sigma_thresh_down)]
-    return dataFrame[column]
+def checking_norm_dist(train):
+    is_normal = []
 
-sigma = 5
+    for i in range(0, len(train.columns)):
+        stats, p = normaltest(train[i])
+        is_normal.append(1) if p > 0.05 else is_normal.append(0)
 
-df_clear = pd.DataFrame()
-for column in train.columns:
-        df_clear = pd.concat([df_clear, rm_sigma(train, column, sigma)], axis=1)
+    print(pd.DataFrame(is_normal).value_counts())
 
-print(df_clear.isna().sum().sort_values())
 
-df_nan_rm = df_clear.dropna()
+def outliers_removing(train):
+    def rm_sigma(dataFrame, column, sigma):
+        mean = dataFrame[column].mean()
+        std = dataFrame[column].std()
+        sigma_thresh_up = mean + sigma * std
+        sigma_thresh_down = mean - sigma * std 
+        dataFrame = dataFrame[(dataFrame[column] < sigma_thresh_up) & (dataFrame[column] > sigma_thresh_down)]
+        return dataFrame[column]
 
-print(df_nan_rm.isna().sum().sort_values())
+    sigma = 5
 
-print(df_nan_rm.shape)
+    df_clear = pd.DataFrame()
+    for column in train.columns:
+            df_clear = pd.concat([df_clear, rm_sigma(train, column, sigma)], axis=1)
 
-# Standardize feature matrix
-scaler = StandardScaler()
-train_std = scaler.fit_transform(train)
+    print(df_clear.isna().sum().sort_values())
 
-# Save data after cleaning
-#train_std.to_csv(absolute_path("data","processed","train_data.csv"), header=False)
+    df_nan_rm = df_clear.dropna()
 
-# PCA best n_components
-pca = PCA(n_components=0.95)
-train_reduced = pca.fit_transform(train_std)
-print('PCA n_components: ', pca.n_components_)
+    print(df_nan_rm.isna().sum().sort_values())
+
+    print(df_nan_rm.shape)
+
+
+def pca_n_comp_calc(train):
+    scaler = StandardScaler()
+    train_std = scaler.fit_transform(train)
+
+    pca = PCA(n_components=0.95)
+    pca.fit_transform(train_std)
+    print('PCA n_components: ', pca.n_components_)
+
+
+def main():
+    train = load_raw_train_data()
+    test = load_test_data()
+    labels = load_labels()
+
+    nan_checking(train, test, labels)
+    high_corelation(train)
+    variance(train)
+    checking_norm_dist(train)
+    outliers_removing(train)
+    pca_n_comp_calc(train)
+
+
+if __name__ == '__main__':
+    main()
