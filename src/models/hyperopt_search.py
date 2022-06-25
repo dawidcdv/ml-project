@@ -5,7 +5,8 @@ import joblib
 import argparse
 from sklearn.decomposition import PCA
 from sklearn import metrics
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classification_report, confusion_matrix,balanced_accuracy_score
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classification_report, confusion_matrix, \
+    balanced_accuracy_score
 from src.data.make_dataset import load_labels, load_train_data, load_raw_train_data
 from sklearn.model_selection import train_test_split, cross_val_score
 from hpsklearn import HyperoptEstimator, any_classifier, svc
@@ -20,14 +21,13 @@ def _train_test_data(X, y, args, test_size=0.3, random_state=542):
     if args.scaler:
         logging.info("Before StandardScaler")
         sc = StandardScaler(with_std=False)
-        X_train = sc.fit_transform(X_train,y_train)
+        X_train = sc.fit_transform(X_train, y_train)
         X_test = sc.transform(X_test)
 
     if args.smote:
         logging.info("Before Smote")
         smote = SMOTE()
         X_train, y_train = smote.fit_resample(X_train, y_train)
-
 
     if args.pca:
         logging.info("Before Pca -  n_components:" + str(args.n_components))
@@ -45,19 +45,23 @@ def _check_condition(args, itter, starttime):
     return itter < args.try_number
 
 
+def loss_fn(y_test, y_pred):
+    return 1 - balanced_accuracy_score(y_test, y_pred)
+
+
 def _get_args():
     parser = argparse.ArgumentParser("Hyperopt Search")
     parser.add_argument("--score_func", help="Sklearn metrics function", type=str, default="balanced_accuracy_score")
-    parser.add_argument("--evals", help="Hyperopt max_evals param - Default 10", type=int, default=1)
-    parser.add_argument("--scaler", help="Apply StandardScaler - Default True", type=bool, default=True)
-    parser.add_argument("--pca", help="Apply PCA - Default True", type=bool, default=True)
+    parser.add_argument("--evals", help="Hyperopt max_evals param - Default 10", type=int, default=50)
+    parser.add_argument("--scaler", help="Apply StandardScaler - Default True", type=bool, default=False)
+    parser.add_argument("--pca", help="Apply PCA - Default True", type=bool, default=False)
     parser.add_argument("--n_components", help="PCA n_components - Default 0.98", type=float, default=0.98)
-    parser.add_argument("--smote", help="Apply smote - Default True", type=bool, default=True)
+    parser.add_argument("--smote", help="Apply smote - Default True", type=bool, default=False)
     parser.add_argument("--try_number", help="Number of executions HyperoptEstimator.fit() in loop - Default 1",
                         type=int,
                         default=1)
     parser.add_argument("--hour", help="Minimum script execution time in hour - Default disable", type=int,
-                        default=0)
+                        default=1)
     parser.add_argument("--trial_timeout", help="HyperoptEstimator trial_timeout param - Default 90",
                         type=int, default=90)
     parser.add_argument("--log_level", help="Log level - Default 10", type=int, default=10)
@@ -76,13 +80,14 @@ def search(X, y, args):
         itter = itter + 1
         try:
             hyper_estim = HyperoptEstimator(classifier=any_classifier('my_clf'), max_evals=args.evals, algo=tpe.suggest,
-                                           n_jobs=-1, trial_timeout=args.trial_timeout)
+                                            n_jobs=-1, trial_timeout=args.trial_timeout,
+                                            loss_fn=loss_fn)
             hyper_estim.fit(X_train, y_train.values.ravel())
             y_pred = hyper_estim.predict(X_test)
             logging.info(args.score_func + ": " + str(score_func(y_test, y_pred)))
             logging.info(hyper_estim.best_model())
             if score_func(y_test, y_pred) > args.min_score:
-                dump_file = absolute_path('models', 'hyperopt_estimator_' + str(itter) + '.pkl')
+                dump_file = absolute_path('models', 'hyperopt_estimator_lft_' + str(itter) + '.pkl')
                 logging.info("Saveing model. Path:" + dump_file)
                 joblib.dump(hyper_estim, dump_file)
         except Exception as ex:
@@ -100,10 +105,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
