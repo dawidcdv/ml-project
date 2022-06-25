@@ -5,7 +5,10 @@ from src.data.make_dataset import load_labels, load_raw_train_data
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
-from src.models.train import verify_model
+
+from src.features.helpers import absolute_path
+from src.models.train_helper import verify_model
+from sklearn.metrics import plot_confusion_matrix
 
 
 def _get_args():
@@ -18,7 +21,6 @@ def _get_args():
 def create_svc_classifier():
     return SVC(C=1.0752079389673375, coef0=0.043809020064986326, degree=2, gamma='auto',
         kernel='poly', random_state=4, shrinking=False, tol=9.287881080560548e-05)
-
 
 
 def main():
@@ -40,9 +42,8 @@ def main():
 
 
     classifier_svc = create_svc_classifier()
-    verify_model(classifier_svc, X_train, y_train, X_test, y_test)
+    verify_model(classifier_svc, X_train, y_train, X_test, y_test, absolute_path("reports","figures","svc_cm.jpg"))
 
 
 if __name__ == '__main__':
     main()
-
