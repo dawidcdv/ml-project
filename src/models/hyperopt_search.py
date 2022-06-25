@@ -9,6 +9,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classificat
     balanced_accuracy_score
 from src.data.make_dataset import load_labels, load_train_data, load_raw_train_data
 from sklearn.model_selection import train_test_split, cross_val_score
+import hpsklearn
 from hpsklearn import HyperoptEstimator, any_classifier, svc
 from hyperopt import tpe
 from src.features.helpers import absolute_path
@@ -61,17 +62,19 @@ def _get_args():
                         type=int,
                         default=1)
     parser.add_argument("--hour", help="Minimum script execution time in hour - Default disable", type=int,
-                        default=1)
+                        default=0)
     parser.add_argument("--trial_timeout", help="HyperoptEstimator trial_timeout param - Default 90",
                         type=int, default=90)
     parser.add_argument("--log_level", help="Log level - Default 10", type=int, default=10)
     parser.add_argument("--min_score", help="Min score to save model", type=float, default=90)
+    parser.add_argument("--classifier", help="Estimator from hpsklearn package", type=str, default="any_classifier")
     return parser.parse_args()
 
 
 def search(X, y, args):
     starttime = time.time()
     score_func = getattr(metrics, args.score_func)
+    classifier = getattr(hpsklearn, args.classifier)
 
     X_train, X_test, y_train, y_test = _train_test_data(X, y, args, test_size=0.3, random_state=542)
 
@@ -79,7 +82,7 @@ def search(X, y, args):
     while _check_condition(args, itter, starttime):
         itter = itter + 1
         try:
-            hyper_estim = HyperoptEstimator(classifier=any_classifier('my_clf'), max_evals=args.evals, algo=tpe.suggest,
+            hyper_estim = HyperoptEstimator(classifier=classifier('my_clf'), max_evals=args.evals, algo=tpe.suggest,
                                             n_jobs=-1, trial_timeout=args.trial_timeout,
                                             loss_fn=loss_fn)
             hyper_estim.fit(X_train, y_train.values.ravel())
