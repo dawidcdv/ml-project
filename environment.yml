@@ -1,0 +1,17 @@
+name: mlproject
+dependencies:
+  - python=3.9
+  - click
+  - joblib
+  - matplotlib
+  - pandas
+  - seaborn
+  - setuptools
+  - numpy
+  - scipy
+  - pip
+  - pip:
+    - "--editable=git+https://github.com/hyperopt/hyperopt-sklearn#egg=hpsklearn"
+    - "imbalanced_learn==0.9.1"
+    - "hyperopt==0.2.7"
+    - "imblearn"
