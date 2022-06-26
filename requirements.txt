@@ -1,4 +1,13 @@
-# local package
--e .
-
-# external requirements
+click==7.1.2
+imbalanced_learn
+imblearn
+joblib
+matplotlib
+numpy
+pandas
+scikit_learn
+scipy
+seaborn
+setuptools
+hyperopt
+git+https://github.com/hyperopt/hyperopt-sklearn#egg=hpsklearn
