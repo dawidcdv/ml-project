@@ -1,12 +1,9 @@
 import matplotlib.pyplot as plt
-import os
-import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-import pandas as pd
 import seaborn as sns
-from src.data.make_dataset import load_raw_train_data, load_labels
+from src.data.dataset import load_raw_train_data, load_labels
 from src.features.helpers import absolute_path
 
 

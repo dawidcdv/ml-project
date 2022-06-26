@@ -1,7 +1,6 @@
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import KFold, cross_val_score
 import numpy as np
-from sklearn.metrics import plot_confusion_matrix
 from matplotlib import pyplot as plt
 
 

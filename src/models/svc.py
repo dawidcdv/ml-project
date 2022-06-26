@@ -1,14 +1,12 @@
 import argparse
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.preprocessing import StandardScaler
-from src.data.make_dataset import load_labels, load_raw_train_data
+from src.data.dataset import load_labels, load_raw_train_data
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
-
 from src.features.helpers import absolute_path
 from src.models.train_helper import verify_model
-from sklearn.metrics import plot_confusion_matrix
 
 
 def _get_args():

@@ -4,7 +4,7 @@ import joblib
 from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import train_test_split
 from src.features.helpers import absolute_path
-from src.data.make_dataset import load_labels, load_raw_train_data
+from src.data.dataset import load_labels, load_raw_train_data
 from src.models.train_helper import verify_model
 
 
@@ -34,7 +34,7 @@ def main():
     args = get_args()
     X = load_raw_train_data()
     y = load_labels()
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=2022)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=42)
     score_dummy(X_train, y_train, X_test, y_test, args.cache)
 
 

@@ -1,4 +1,4 @@
-from src.data.make_dataset import load_raw_train_data
+from src.data.dataset import load_raw_train_data
 from sklearn.neighbors import LocalOutlierFactor
 
 

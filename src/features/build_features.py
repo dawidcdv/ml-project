@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import VarianceThreshold
-from src.data.make_dataset import load_raw_train_data, load_test_data, load_labels
+from src.data.dataset import load_raw_train_data, load_test_data, load_labels
 from src.features.helpers import absolute_path
 from scipy.stats import normaltest
 from sklearn.decomposition import PCA

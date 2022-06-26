@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import numpy as np
-from src.data.make_dataset import load_raw_train_data, load_labels, load_test_data
+from src.data.dataset import load_raw_train_data, load_labels, load_test_data
 from src.features.helpers import absolute_path
 from src.models.svc import create_svc_classifier
 
