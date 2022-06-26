@@ -4,7 +4,7 @@ import joblib
 from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import train_test_split
 from src.features.helpers import absolute_path
-from src.data.make_dataset import load_labels, load_raw_train_data
+from src.data.dataset import load_labels, load_raw_train_data
 from src.models.train_helper import verify_model
 
 

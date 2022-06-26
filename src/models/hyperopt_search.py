@@ -5,12 +5,11 @@ import joblib
 import argparse
 from sklearn.decomposition import PCA
 from sklearn import metrics
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classification_report, confusion_matrix, \
-    balanced_accuracy_score
-from src.data.make_dataset import load_labels, load_train_data, load_raw_train_data
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import balanced_accuracy_score
+from src.data.dataset import load_labels, load_train_data, load_raw_train_data
+from sklearn.model_selection import train_test_split
 import hpsklearn
-from hpsklearn import HyperoptEstimator, any_classifier, svc
+from hpsklearn import HyperoptEstimator
 from hyperopt import tpe
 from src.features.helpers import absolute_path
 import logging

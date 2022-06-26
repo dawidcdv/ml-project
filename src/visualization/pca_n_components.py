@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-from src.data.make_dataset import load_raw_train_data, absolute_path
+from src.data.dataset import load_raw_train_data, absolute_path
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
