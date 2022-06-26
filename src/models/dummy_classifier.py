@@ -34,7 +34,7 @@ def main():
     args = get_args()
     X = load_raw_train_data()
     y = load_labels()
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=2022)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=42)
     score_dummy(X_train, y_train, X_test, y_test, args.cache)
 
 
